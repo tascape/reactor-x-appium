@@ -16,7 +16,7 @@
 package com.tascape.reactor.appium.suite;
 
 import com.tascape.reactor.exception.EntityCommunicationException;
-import com.tascape.reactor.appium.comm.AppiumIOSDevice;
+import com.tascape.reactor.appium.comm.IOSDevice;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  */
 public interface IOSSuite {
 
-    BlockingQueue<AppiumIOSDevice> DEVICES = null;
+    BlockingQueue<IOSDevice> DEVICES = null;
 
-    default AppiumIOSDevice getAvailableDevice() throws  InterruptedException {
-        AppiumIOSDevice device = DEVICES.poll(1, TimeUnit.SECONDS);
+    default IOSDevice getAvailableDevice() throws  InterruptedException {
+        IOSDevice device = DEVICES.poll(1, TimeUnit.SECONDS);
         if (device == null) {
             throw new EntityCommunicationException("Cannot find a device available");
         }

@@ -24,7 +24,7 @@ import org.openqa.selenium.WebElement;
  *
  * @author linsong wang
  */
-public class AppiumIOSDevice extends Device<IOSDriver> {
+public class IOSDevice extends Device<IOSDriver> {
 
     private IOSDriver<WebElement> driver = null;
 

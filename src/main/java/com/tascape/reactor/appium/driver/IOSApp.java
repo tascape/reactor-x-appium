@@ -16,7 +16,7 @@
  */
 package com.tascape.reactor.appium.driver;
 
-import com.tascape.reactor.appium.comm.AppiumIOSDevice;
+import com.tascape.reactor.appium.comm.IOSDevice;
 import org.apache.commons.lang3.StringUtils;
 import org.libimobiledevice.ios.driver.binding.exceptions.SDKException;
 import org.slf4j.Logger;
@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public class IOSApp extends App<AppiumIOSDevice> {
+public class IOSApp extends App<IOSDevice> {
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-    public void setDevice(AppiumIOSDevice device) {
+    public void setDevice(IOSDevice device) {
         this.device = device;
     }
 
