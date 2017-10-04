@@ -17,8 +17,8 @@
 package com.tascape.reactor.appium.comm;
 
 import com.tascape.reactor.ios.driver.LibIMobileDevice;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
-import org.openqa.selenium.WebElement;
 
 /**
  *
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebElement;
  */
 public class IOSDevice extends Device<IOSDriver> {
 
-    private IOSDriver<WebElement> driver = null;
+    private IOSDriver<MobileElement> driver = null;
 
     private LibIMobileDevice libIMobileDevice = null;
 

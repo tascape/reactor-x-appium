@@ -18,7 +18,7 @@ package com.tascape.reactor.appium.comm;
 
 import com.tascape.reactor.comm.EntityCommunication;
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.WebElement;
+import io.appium.java_client.MobileElement;
 
 /**
  *
@@ -27,7 +27,7 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class Device<T extends AppiumDriver> extends EntityCommunication {
 
-    private AppiumDriver<WebElement> driver = null;
+    private AppiumDriver<MobileElement> driver = null;
 
     @Override
     public void connect() throws Exception {

@@ -16,8 +16,8 @@
  */
 package com.tascape.reactor.appium.comm;
 
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.WebElement;
 
 /**
  *
@@ -25,7 +25,7 @@ import org.openqa.selenium.WebElement;
  */
 public class AndroidDevice extends Device<AndroidDriver> {
 
-    private AndroidDriver<WebElement> driver = null;
+    private AndroidDriver<MobileElement> driver = null;
 
     @Override
     public AndroidDriver getAppliumDriver() {
