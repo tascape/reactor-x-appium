@@ -37,7 +37,7 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
     public void disconnect() throws Exception {
     }
 
-    public abstract T getAppliumDriver();
+    public abstract T getAppiumDriver();
 
     public abstract void start(String name, int launchTries, int launchDelayMillis);
 

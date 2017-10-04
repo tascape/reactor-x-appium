@@ -31,7 +31,7 @@ public class IOSDevice extends Device<IOSDriver> {
     private LibIMobileDevice libIMobileDevice = null;
 
     @Override
-    public IOSDriver getAppliumDriver() {
+    public IOSDriver getAppiumDriver() {
         return driver;
     }
 

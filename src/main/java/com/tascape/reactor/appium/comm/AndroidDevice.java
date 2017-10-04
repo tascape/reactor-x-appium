@@ -28,7 +28,7 @@ public class AndroidDevice extends Device<AndroidDriver> {
     private AndroidDriver<MobileElement> driver = null;
 
     @Override
-    public AndroidDriver getAppliumDriver() {
+    public AndroidDriver getAppiumDriver() {
         return driver;
     }
 
