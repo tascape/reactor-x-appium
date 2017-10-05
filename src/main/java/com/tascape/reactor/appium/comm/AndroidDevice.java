@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - present Nebula Bay.
+ * Copyright (c) 2017 - present Nebula Bay.
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package com.tascape.reactor.appium.comm;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  *
@@ -33,10 +34,13 @@ public class AndroidDevice extends Device<AndroidDriver> {
     }
 
     @Override
-    public void start(String name, int launchTries, int launchDelayMillis) {
+    public void connect() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void reset() {
+    public DesiredCapabilities getCapabilities() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

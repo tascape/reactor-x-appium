@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tascape.reactor.appium.task;
+package com.tascape.reactor.appium.driver;
 
-import com.tascape.reactor.appium.driver.App;
+import com.tascape.reactor.appium.comm.IOSDevice;
 
 /**
- * This interface provides default methods to be called in cases.
  *
  * @author linsong wang
+ * @param <T> iOS app
  */
-public interface AppiumCase {
+public abstract class IOSWindow<T extends IOSApp> {
 
-    default void runManully(App app) throws Exception {
-        this.runManully(app, 30);
+    protected T app;
+
+    protected IOSDevice device;
+
+    public void setApp(T app) {
+        this.app = app;
+        this.device = app.device;
     }
 
-    default void runManully(App app, int minutes) throws Exception {
-        app.interactManually(minutes);
-    }
+    /**
+     * Throws a RuntimeException is there is a loading error.
+     */
+    public abstract void load();
 }

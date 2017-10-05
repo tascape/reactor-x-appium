@@ -16,13 +16,7 @@
         <dependency>
             <groupId>com.tascape</groupId>
             <artifactId>reactor</artifactId>
-            <version>1.2.3</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.tascape</groupId>
-            <artifactId>reactor-x-ios-libimobiledevice</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.26</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -34,12 +28,6 @@
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
             <version>5.0.3</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.tascape</groupId>
-            <artifactId>reactor-x-ios-uiat</artifactId>
-            <version>1.2.1</version>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -183,5 +171,3 @@
         </repository>
     </repositories>
 </project>
-
-

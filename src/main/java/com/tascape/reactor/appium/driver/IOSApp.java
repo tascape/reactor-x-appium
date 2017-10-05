@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - present Nebula Bay.
+ * Copyright (c) 2017 - present Nebula Bay.
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,10 @@
 package com.tascape.reactor.appium.driver;
 
 import com.tascape.reactor.appium.comm.IOSDevice;
-import org.apache.commons.lang3.StringUtils;
-import org.libimobiledevice.ios.driver.binding.exceptions.SDKException;
+import com.tascape.reactor.exception.EntityDriverException;
+import java.util.HashMap;
+import java.util.Map;
+import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,28 +28,45 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public class IOSApp extends App<IOSDevice> {
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+public abstract class IOSApp extends App<IOSDevice> {
+    private static final Logger LOG = LoggerFactory.getLogger(IOSApp.class);
+
+    private final Map<Class<? extends IOSWindow>, IOSWindow> loadedWindows = new HashMap<>();
 
     public void setDevice(IOSDevice device) {
         this.device = device;
     }
 
-    @Override
-    public String getVersion() {
-        if (StringUtils.isBlank(version)) {
+    public <T extends IOSWindow> T open(Class<T> windowClass) {
+        IOSWindow window = loadedWindows.get(windowClass);
+        if (window == null) {
             try {
-                version = device.getLibIMobileDevice().getAppVersion(getBundleId());
-            } catch (SDKException ex) {
-                LOG.warn(ex.getMessage());
-                version = "";
+                window = windowClass.newInstance();
+                window.load();
+                window.setApp(this);
+                loadedWindows.put(windowClass, window);
+            } catch (IllegalAccessException | InstantiationException ex) {
+                throw new EntityDriverException(ex.getLocalizedMessage());
             }
         }
-        return version;
+        return windowClass.cast(window);
     }
-    @Override
-    public String getBundleId() {
-        return "com.tascape.reactor";
+
+    public <T extends IOSWindow> T open(By by, Class<T> windowClass) {
+        device.getAppiumDriver().findElement(by).click();
+        IOSWindow window = loadedWindows.get(windowClass);
+        if (window == null) {
+            try {
+                window = windowClass.newInstance();
+                window.setApp(this);
+                window.load();
+                window.setApp(this);
+                loadedWindows.put(windowClass, window);
+            } catch (IllegalAccessException | InstantiationException ex) {
+                throw new EntityDriverException(ex.getLocalizedMessage());
+            }
+        }
+        return windowClass.cast(window);
     }
 
     @Override
@@ -58,11 +77,5 @@ public class IOSApp extends App<IOSDevice> {
     @Override
     public String getName() {
         return "IOSApp";
-    }
-
-    @Override
-    public void launch() throws Exception {
-        device.getLibIMobileDevice().getDebugService().killApp(this.getBundleId());
-        device.start(this.getName(), getLaunchTries(), getLaunchDelayMillis());
     }
 }

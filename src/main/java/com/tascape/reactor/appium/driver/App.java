@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - present Nebula Bay.
+ * Copyright (c) 2017 - present Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,19 +30,28 @@ public abstract class App<T extends Device> extends EntityDriver {
 
     public abstract String getBundleId();
 
+    public abstract String getAppPath();
+
     public abstract int getLaunchDelayMillis();
 
     protected String version;
-    
+
     public void setAppiumDevice(T device) {
         this.device = device;
     }
 
-    public int getLaunchTries() {
-        return 2;
+    public void launch() throws Exception {
+        device.getCapabilities().setCapability("bundleId", this.getBundleId());
+        device.connect();
+        device.getAppiumDriver().launchApp();
     }
 
-    public abstract void launch() throws Exception;
+    @Override
+    public void reset() throws Exception {
+        if (device != null && device.getAppiumDriver() != null) {
+            device.getAppiumDriver().resetApp();
+        }
+    }
 
     public void interactManually() throws Exception {
         interactManually(30);
@@ -58,12 +67,5 @@ public abstract class App<T extends Device> extends EntityDriver {
      * @throws Exception if case of error
      */
     public void interactManually(int timeoutMinutes) throws Exception {
-    }
-
-    @Override
-    public void reset() throws Exception {
-        if (device != null) {
-            device.reset();
-        }
     }
 }

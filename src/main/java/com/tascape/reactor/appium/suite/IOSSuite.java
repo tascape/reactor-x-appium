@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - present Nebula Bay.
+ * Copyright (c) 2017 - present Nebula Bay.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public interface IOSSuite {
 
     BlockingQueue<IOSDevice> DEVICES = null;
 
-    default IOSDevice getAvailableDevice() throws  InterruptedException {
+    default IOSDevice getAvailableDevice() throws InterruptedException {
         IOSDevice device = DEVICES.poll(1, TimeUnit.SECONDS);
         if (device == null) {
             throw new EntityCommunicationException("Cannot find a device available");

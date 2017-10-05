@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - present Nebula Bay.
+ * Copyright (c) 2017 - present Nebula Bay.
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,34 +16,36 @@
  */
 package com.tascape.reactor.appium.comm;
 
-import com.tascape.reactor.ios.driver.LibIMobileDevice;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
+import java.net.URL;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author linsong wang
  */
 public class IOSDevice extends Device<IOSDriver> {
+    private static final Logger LOG = LoggerFactory.getLogger(IOSDevice.class);
 
-    private IOSDriver<MobileElement> driver = null;
+    private IOSDriver<MobileElement> driver;
 
-    private LibIMobileDevice libIMobileDevice = null;
+    private final DesiredCapabilities capabilities = Device.initIOSCapabilities();
 
     @Override
-    public IOSDriver getAppiumDriver() {
-        return driver;
+    public void connect() throws Exception {
+        this.connect("http://127.0.0.1:4723/wd/hub");
+    }
+
+    public void connect(String url) throws Exception {
+        driver = new IOSDriver(new URL(url), capabilities);
+        super.setAppiumDriver(driver);
     }
 
     @Override
-    public void start(String name, int launchTries, int launchDelayMillis) {
-    }
-
-    @Override
-    public void reset() {
-    }
-
-    public LibIMobileDevice getLibIMobileDevice() {
-        return libIMobileDevice;
+    public DesiredCapabilities getCapabilities() {
+        return capabilities;
     }
 }
