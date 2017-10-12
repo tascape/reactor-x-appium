@@ -17,6 +17,9 @@ package com.tascape.reactor.appium.driver;
 
 import com.tascape.reactor.driver.EntityDriver;
 import com.tascape.reactor.appium.comm.Device;
+import java.io.File;
+import java.io.IOException;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,6 +28,7 @@ import com.tascape.reactor.appium.comm.Device;
  */
 @SuppressWarnings("ProtectedField")
 public abstract class App<T extends Device> extends EntityDriver {
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(App.class);
 
     protected T device;
 
@@ -44,6 +48,15 @@ public abstract class App<T extends Device> extends EntityDriver {
         device.getCapabilities().setCapability("bundleId", this.getBundleId());
         device.connect();
         device.getAppiumDriver().launchApp();
+    }
+
+    public File takeScreenShot() {
+        try {
+            return device.takeScreenShot();
+        } catch (IOException ex) {
+            LOG.warn(ex.getLocalizedMessage());
+        }
+        return null;
     }
 
     @Override

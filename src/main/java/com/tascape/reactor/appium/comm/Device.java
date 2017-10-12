@@ -20,6 +20,13 @@ import com.tascape.reactor.comm.EntityCommunication;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -32,6 +39,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Device<T extends AppiumDriver> extends EntityCommunication {
     private static final Logger LOG = LoggerFactory.getLogger(Device.class);
+
+    public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
 
     private AppiumDriver<MobileElement> driver;
 
@@ -79,6 +88,21 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
 
     public void clickByAccessibilityId(String accessibilityId) {
         driver.findElementByAccessibilityId(accessibilityId).click();
+    }
+
+    /**
+     * Takes a screen shot of current screen.
+     *
+     * @return image file
+     *
+     * @throws IOException if error
+     */
+    public File takeScreenShot() throws IOException {
+        File ss = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File f = this.getLogPath().resolve("screenshot-" + LocalDateTime.now().format(DT_FORMATTER) + ".png").toFile();
+        LOG.debug("Screenshot {}", f.getAbsolutePath());
+        FileUtils.moveFile(ss, f);
+        return f;
     }
 
     public static void main(String[] args) throws Exception {

@@ -18,9 +18,12 @@ package com.tascape.reactor.appium.driver;
 
 import com.tascape.reactor.appium.comm.IOSDevice;
 import com.tascape.reactor.exception.EntityDriverException;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import java.util.HashMap;
 import java.util.Map;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +45,9 @@ public abstract class IOSApp extends App<IOSDevice> {
         if (window == null) {
             try {
                 window = windowClass.newInstance();
-                window.load();
+                PageFactory.initElements(new AppiumFieldDecorator(device.getAppiumDriver()), window);
                 window.setApp(this);
+                window.load();
                 loadedWindows.put(windowClass, window);
             } catch (IllegalAccessException | InstantiationException ex) {
                 throw new EntityDriverException(ex.getLocalizedMessage());
@@ -53,14 +57,19 @@ public abstract class IOSApp extends App<IOSDevice> {
     }
 
     public <T extends IOSWindow> T open(By by, Class<T> windowClass) {
-        device.getAppiumDriver().findElement(by).click();
+        MobileElement element = (MobileElement) device.getAppiumDriver().findElement(by);
+        return this.open(element, windowClass);
+    }
+
+    public <T extends IOSWindow> T open(MobileElement element, Class<T> windowClass) {
+        element.click();
         IOSWindow window = loadedWindows.get(windowClass);
         if (window == null) {
             try {
                 window = windowClass.newInstance();
+                PageFactory.initElements(new AppiumFieldDecorator(device.getAppiumDriver()), window);
                 window.setApp(this);
                 window.load();
-                window.setApp(this);
                 loadedWindows.put(windowClass, window);
             } catch (IllegalAccessException | InstantiationException ex) {
                 throw new EntityDriverException(ex.getLocalizedMessage());
