@@ -30,11 +30,15 @@ import org.slf4j.LoggerFactory;
 public abstract class App<T extends Device> extends EntityDriver {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(App.class);
 
+    public static final String APP_PATH = "reactor.appium.APP_PATH";
+
     protected T device;
 
     public abstract String getBundleId();
 
-    public abstract String getAppPath();
+    public String getAppPath() {
+        return SYS_CONFIG.getProperty(APP_PATH, "");
+    }
 
     public abstract int getLaunchDelayMillis();
 
@@ -45,9 +49,8 @@ public abstract class App<T extends Device> extends EntityDriver {
     }
 
     public void launch() throws Exception {
-        device.getCapabilities().setCapability("bundleId", this.getBundleId());
         device.connect();
-        device.getAppiumDriver().launchApp();
+        //device.getAppiumDriver().launchApp();
     }
 
     public File takeScreenShot() {

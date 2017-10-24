@@ -19,7 +19,6 @@ package com.tascape.reactor.appium.comm;
 import com.tascape.reactor.comm.EntityCommunication;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.ios.IOSDriver;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,6 +30,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static com.tascape.reactor.AbstractCaseResource.SYS_CONFIG;
 
 /**
  *
@@ -40,35 +40,23 @@ import org.slf4j.LoggerFactory;
 public abstract class Device<T extends AppiumDriver> extends EntityCommunication {
     private static final Logger LOG = LoggerFactory.getLogger(Device.class);
 
+    public static final String APPIUM_HOST = "reactor.comm.APPIUM_HOST";
+
+    public static final String APPIUM_PORT = "reactor.comm.APPIUM_PORT";
+
     public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
 
-    private AppiumDriver<MobileElement> driver;
-
-    public static final DesiredCapabilities initIOSCapabilities() {
-        return new DesiredCapabilities() {
-            {
-                setCapability("platformVersion", "11.0");
-                setCapability("platformName", "iOS");
-                setCapability("deviceName", "iPhone Simulator");
-                setCapability("automationName", "XCUITest");
-            }
-        };
-    }
-
-    public static IOSDevice newIOSDevice() throws Exception {
-        try {
-            return new IOSDevice();
-        } catch (Exception ex) {
-            LOG.warn(ex.getMessage());
-            Thread.sleep(1000);
-            return new IOSDevice();
-        }
-    }
+    protected AppiumDriver<MobileElement> driver;
 
     public abstract DesiredCapabilities getCapabilities();
 
-    public void setAppiumDriver(T driver) {
-        this.driver = driver;
+    public abstract void connect(String host, int port) throws Exception;
+
+    @Override
+    public void connect() throws Exception {
+        String host = SYS_CONFIG.getProperty(APPIUM_HOST, "127.0.0.1");
+        int port = SYS_CONFIG.getIntProperty(APPIUM_PORT, 4723);
+        this.connect(host, port);
     }
 
     public T getAppiumDriver() {
@@ -103,15 +91,5 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
         LOG.debug("Screenshot {}", f.getAbsolutePath());
         FileUtils.moveFile(ss, f);
         return f;
-    }
-
-    public static void main(String[] args) throws Exception {
-        IOSDevice iOSDevice = Device.newIOSDevice();
-
-        IOSDriver<MobileElement> ios = iOSDevice.getAppiumDriver();
-        ios.closeApp();
-        ios.findElementByAccessibilityId("SIGN UP - IT'S FREE").click();
-
-        Thread.sleep(20000000);
     }
 }

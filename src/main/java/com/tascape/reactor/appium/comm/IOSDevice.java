@@ -30,22 +30,62 @@ import org.slf4j.LoggerFactory;
 public class IOSDevice extends Device<IOSDriver> {
     private static final Logger LOG = LoggerFactory.getLogger(IOSDevice.class);
 
-    private IOSDriver<MobileElement> driver;
+    public static final String VERSION = "reactor.appium.ios.VERSION";
 
-    private final DesiredCapabilities capabilities = Device.initIOSCapabilities();
+    public static final String DEVICE_NAME = "reactor.appium.ios.DEVICE_NAME";
 
-    @Override
-    public void connect() throws Exception {
-        this.connect("http://127.0.0.1:4723/wd/hub");
-    }
+    private final DesiredCapabilities capabilities = IOSDevice.initCapabilities();
 
-    public void connect(String url) throws Exception {
-        driver = new IOSDriver(new URL(url), capabilities);
-        super.setAppiumDriver(driver);
+    private IOSDriver<MobileElement> iOSDriver;
+
+    /**
+     * Gets an instance of simulator.
+     *
+     * @param iOSVersion, such as "iOS 11.0"
+     * @param deviceName, such as "iPhone 6s"
+     *
+     * @return an iOS instance
+     *
+     * @throws Exception
+     */
+    public static IOSDevice newIOSSimulator(String iOSVersion, String deviceName) throws Exception {
+        IOSDevice iOSDevice = new IOSDevice();
+        iOSDevice.getCapabilities().setCapability("platformVersion", iOSVersion);
+        iOSDevice.getCapabilities().setCapability("deviceName", "iPhone Simulator");
+        String udid = IOSSimulator.getUdid(iOSVersion, deviceName);
+        iOSDevice.getCapabilities().setCapability("udid", udid);
+        return iOSDevice;
     }
 
     @Override
     public DesiredCapabilities getCapabilities() {
         return capabilities;
+    }
+
+    @Override
+    public void connect(String host, int port) throws Exception {
+        String url = "http://" + host + ":" + port + "/wd/hub";
+        iOSDriver = new IOSDriver(new URL(url), capabilities);
+        driver = iOSDriver;
+    }
+
+    public static final DesiredCapabilities initCapabilities() {
+        return new DesiredCapabilities() {
+            {
+                setCapability("platformName", "iOS");
+                setCapability("deviceName", SYS_CONFIG.getProperty(DEVICE_NAME, "iPhone Simulator"));
+                setCapability("automationName", "XCUITest");
+            }
+        };
+    }
+
+    public static void main(String[] args) throws Exception {
+        IOSDevice iOSDevice = IOSDevice.newIOSSimulator("iOS 11.0", "iPhone 6s");
+
+        IOSDriver<MobileElement> ios = iOSDevice.getAppiumDriver();
+        ios.closeApp();
+        ios.findElementByAccessibilityId("SIGN UP - IT'S FREE").click();
+
+        Thread.sleep(20000000);
     }
 }

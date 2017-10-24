@@ -22,6 +22,7 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
@@ -38,6 +39,22 @@ public abstract class IOSApp extends App<IOSDevice> {
 
     public void setDevice(IOSDevice device) {
         this.device = device;
+    }
+
+    @Override
+    public void launch() throws Exception {
+        String app = this.getAppPath();
+        if (StringUtils.isNotBlank(app)) {
+            LOG.debug("launch app by package");
+            device.getCapabilities().setCapability("app", app);
+        } else {
+            String bundleId = this.getBundleId();
+            if (StringUtils.isNotBlank(bundleId)) {
+                LOG.debug("launch app by bundle id");
+                device.getCapabilities().setCapability("bundleId", bundleId);
+            }
+        }
+        super.launch();
     }
 
     public <T extends IOSWindow> T open(Class<T> windowClass) {

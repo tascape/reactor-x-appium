@@ -26,7 +26,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class AndroidDevice extends Device<AndroidDriver> {
 
-    private AndroidDriver<MobileElement> driver = null;
+    private AndroidDriver<MobileElement> driver;
 
     @Override
     public AndroidDriver getAppiumDriver() {
@@ -40,6 +40,11 @@ public class AndroidDevice extends Device<AndroidDriver> {
 
     @Override
     public DesiredCapabilities getCapabilities() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void connect(String host, int port) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
