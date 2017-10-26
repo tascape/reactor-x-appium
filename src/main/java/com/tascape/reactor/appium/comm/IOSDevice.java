@@ -52,7 +52,7 @@ public class IOSDevice extends Device<IOSDriver> {
         IOSDevice iOSDevice = new IOSDevice();
         iOSDevice.getCapabilities().setCapability("platformVersion", iOSVersion);
         iOSDevice.getCapabilities().setCapability("deviceName", "iPhone Simulator");
-        String udid = IOSSimulator.getUdid(iOSVersion, deviceName);
+        String udid = IOSSimulatorControl.getUdid(iOSVersion, deviceName);
         iOSDevice.getCapabilities().setCapability("udid", udid);
         return iOSDevice;
     }

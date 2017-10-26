@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author linsong wang
  */
-public class IOSSimulator {
-    private static final Logger LOG = LoggerFactory.getLogger(IOSSimulator.class);
+public class IOSSimulatorControl {
+    private static final Logger LOG = LoggerFactory.getLogger(IOSSimulatorControl.class);
 
     private static final JSONObject SIMULATORS = getAllSimlators();
 

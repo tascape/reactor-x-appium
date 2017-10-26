@@ -30,7 +30,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static com.tascape.reactor.AbstractCaseResource.SYS_CONFIG;
 
 /**
  *
@@ -46,6 +45,8 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
 
     public static final DateTimeFormatter DT_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
 
+    private AppiumServer appiumServer;
+
     protected AppiumDriver<MobileElement> driver;
 
     public abstract DesiredCapabilities getCapabilities();
@@ -54,9 +55,9 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
 
     @Override
     public void connect() throws Exception {
-        String host = SYS_CONFIG.getProperty(APPIUM_HOST, "127.0.0.1");
-        int port = SYS_CONFIG.getIntProperty(APPIUM_PORT, 4723);
-        this.connect(host, port);
+        appiumServer = new AppiumServer();
+        appiumServer.connect();
+        this.connect("127.0.0.1", appiumServer.getPort());
     }
 
     public T getAppiumDriver() {
@@ -71,6 +72,9 @@ public abstract class Device<T extends AppiumDriver> extends EntityCommunication
     public void disconnect() throws Exception {
         if (driver != null) {
             driver.quit();
+        }
+        if (appiumServer != null) {
+            appiumServer.disconnect();
         }
     }
 
