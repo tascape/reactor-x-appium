@@ -75,6 +75,7 @@ public class IOSDevice extends Device<IOSDriver> {
                 setCapability("platformName", "iOS");
                 setCapability("deviceName", SYS_CONFIG.getProperty(DEVICE_NAME, "iPhone Simulator"));
                 setCapability("automationName", "XCUITest");
+                setCapability("autoAcceptAlerts", true);
             }
         };
     }

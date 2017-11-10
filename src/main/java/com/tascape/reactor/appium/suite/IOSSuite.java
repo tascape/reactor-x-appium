@@ -27,17 +27,17 @@ import java.util.concurrent.TimeUnit;
  */
 public interface IOSSuite {
 
-    BlockingQueue<IOSDevice> DEVICES = null;
+    BlockingQueue<IOSDevice> SIMULATORS = null;
 
-    default IOSDevice getAvailableDevice() throws InterruptedException {
-        IOSDevice device = DEVICES.poll(1, TimeUnit.SECONDS);
+    default IOSDevice getAvailableSimulator() throws InterruptedException {
+        IOSDevice device = SIMULATORS.poll(1, TimeUnit.SECONDS);
         if (device == null) {
             throw new EntityCommunicationException("Cannot find a device available");
         }
         return device;
     }
 
-    default int getNumberOfDevices() {
-        return DEVICES.size();
+    default int getNumberOfSimulators() {
+        return SIMULATORS.size();
     }
 }

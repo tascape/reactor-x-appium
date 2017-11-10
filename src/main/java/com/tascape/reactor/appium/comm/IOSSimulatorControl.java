@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.Executor;
@@ -44,17 +45,29 @@ public class IOSSimulatorControl {
     private static final JSONObject SIMULATORS = getAllSimlators();
 
     public static String getUdid(String iOSVersion, String deviceName) {
-        JSONArray devices = SIMULATORS.optJSONObject("devices").optJSONArray(iOSVersion);
-        if (devices == null) {
-            throw new EntityCommunicationException("cannot find simulator with version " + iOSVersion);
-        }
-        for (int i = 0, j = devices.length(); i < j; i++) {
-            JSONObject device = devices.getJSONObject(i);
-            if (deviceName.equals(device.getString("name"))) {
-                return device.getString("udid");
-            }
+        Optional<IOSSimulator> sim = getAllIOSSimlators().stream().filter(s -> {
+            return s.getVersion().equals(iOSVersion) && s.getName().equals(deviceName);
+        }).findFirst();
+        if (sim.isPresent()) {
+            return sim.get().getUdid();
         }
         throw new EntityCommunicationException("cannot find simulator with name " + deviceName);
+    }
+
+    public static List<IOSSimulator> getAllIOSSimlators() {
+        List<IOSSimulator> simulators = new ArrayList<>();
+        JSONObject devices = SIMULATORS.getJSONObject("devices");
+        devices.toMap().keySet().stream().filter(key -> (key + "").startsWith("iOS ")).forEach(iOSVersion -> {
+            JSONArray sims = devices.optJSONArray(iOSVersion + "");
+            for (int i = 0, j = sims.length(); i < j; i++) {
+                JSONObject device = sims.getJSONObject(i);
+                simulators.add(new IOSSimulator(iOSVersion + "", device));
+            }
+        });
+        if (simulators.isEmpty()) {
+            throw new EntityCommunicationException("Cannot find any iOS simulator");
+        }
+        return simulators;
     }
 
     private static JSONObject getAllSimlators() {
@@ -137,5 +150,56 @@ public class IOSSimulatorControl {
         public void stop() {
             LOG.trace("stop");
         }
+    }
+
+    public static class IOSSimulator {
+        private final String version;
+
+        private final String name;
+
+        private final String state;
+
+        private final String availability;
+
+        private final String udid;
+
+        public IOSSimulator(String version, JSONObject json) {
+            this.version = version;
+            this.name = json.getString("name");
+            this.state = json.getString("state");
+            this.availability = json.getString("availability");
+            this.udid = json.getString("udid");
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public String getName() {
+
+            return name;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getAvailability() {
+            return availability;
+        }
+
+        public String getUdid() {
+            return udid;
+        }
+
+        @Override
+        public String toString() {
+            return version + " " + name + " " + udid;
+        }
+    }
+
+    public static void main(String[] args) {
+        List<IOSSimulator> sims = IOSSimulatorControl.getAllIOSSimlators();
+        LOG.debug("{}", sims);
     }
 }
